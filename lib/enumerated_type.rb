@@ -42,6 +42,10 @@ module EnumeratedType
       by_name(name)
     end
 
+    def recognized?(name)
+      map(&:name).include?(name)
+    end
+
     private
 
     def declare(name, options = {})

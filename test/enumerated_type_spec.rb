@@ -89,4 +89,14 @@ describe EnumeratedType do
       lambda { Gender.by_value((Gender.map(&:value).max) + 1) }.must_raise(ArgumentError)
     end
   end
+
+  describe ".recognized?" do
+    it "returns true if the name is declared" do
+      Gender.recognized?(:male).must_equal true
+    end
+
+    it "returns false if the name is has not been declared" do
+      Gender.recognized?(:neuter).must_equal false
+    end
+  end
 end
