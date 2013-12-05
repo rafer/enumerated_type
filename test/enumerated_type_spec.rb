@@ -37,6 +37,33 @@ describe EnumeratedType do
     Gender.entries.map(&:female?).must_equal [false, true]
   end
 
+  describe ".new" do
+    it "returns an anonymous class" do
+      EnumeratedType.new.instance_of?(Class).must_equal true
+      EnumeratedType.new.name.must_equal nil
+    end
+
+    it "returns a class that includes EnumeratedType" do
+      gender = EnumeratedType.new
+      gender.ancestors.include?(EnumeratedType).must_equal true
+    end
+
+    it "declares the given names as types (provided as arguments)" do
+      gender = EnumeratedType.new(:male, :female)
+      gender.map(&:name).must_equal [:male, :female]
+    end
+
+    it "declares the given names as types (provides as array)" do
+      gender = EnumeratedType.new([:male, :female])
+      gender.map(&:name).must_equal [:male, :female]
+    end
+
+    it "declares the given names as types (provides any enumerable)" do
+      gender = EnumeratedType.new(Set.new([:male, :female]))
+      gender.map(&:name).must_equal [:male, :female]
+    end
+  end
+
   describe ".declare" do
     it "is private" do
       lambda { Gender.declare }.must_raise(NoMethodError, /private method `declare' called/)

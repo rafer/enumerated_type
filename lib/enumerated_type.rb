@@ -23,6 +23,16 @@ module EnumeratedType
     options.each { |k, v| send(:"#{k}=", v) }
   end
 
+  def self.new(*names)
+    names = names.first if names.first.kind_of?(Enumerable)
+
+    Class.new do
+      include EnumeratedType
+
+      names.each { |n| declare(n) }
+    end
+  end
+
   module ClassMethods
     def each(&block)
       @all.each(&block)
