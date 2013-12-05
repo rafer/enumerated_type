@@ -14,6 +14,10 @@ module EnumeratedType
     end
   end
 
+  def inspect
+    "#<#{self.class.name}:#{name}>"
+  end
+
   private
 
   def initialize(name, value, options = {})

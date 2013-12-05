@@ -126,4 +126,10 @@ describe EnumeratedType do
       Gender.recognized?(:neuter).must_equal false
     end
   end
+
+  describe "#inspect" do
+    it "looks reasonable" do
+      Gender::FEMALE.inspect.must_equal "#<Gender:female>"
+    end
+  end
 end
