@@ -132,4 +132,10 @@ describe EnumeratedType do
       Gender::FEMALE.inspect.must_equal "#<Gender:female>"
     end
   end
+
+  describe "#to_s" do
+    it "is the name (as a string)" do
+      Gender::MALE.to_s.must_equal "male"
+    end
+  end
 end

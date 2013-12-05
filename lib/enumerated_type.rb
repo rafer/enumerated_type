@@ -18,6 +18,10 @@ module EnumeratedType
     "#<#{self.class.name}:#{name}>"
   end
 
+  def to_s
+    name.to_s
+  end
+
   private
 
   def initialize(name, value, options = {})
