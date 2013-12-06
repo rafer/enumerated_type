@@ -24,11 +24,9 @@ module EnumeratedType
 
   private
 
-  def initialize(name, value, options = {})
-    @name  = name
-    @value = value
-
-    options.each { |k, v| send(:"#{k}=", v) }
+  def initialize(name, properties)
+    @name = name
+    properties.each { |k, v| send(:"#{k}=", v) }
   end
 
   def self.new(*names)
@@ -36,7 +34,6 @@ module EnumeratedType
 
     Class.new do
       include EnumeratedType
-
       names.each { |n| declare(n) }
     end
   end
@@ -46,18 +43,9 @@ module EnumeratedType
       @all.each(&block)
     end
 
-    def by_value(value)
-      each { |e| return e if e.value == value }
-      raise ArgumentError, "Unrecognized #{self.name} value #{value.inspect}'"
-    end
-
-    def by_name(name)
+    def [](name)
       each { |e| return e if e.name == name }
       raise ArgumentError, "Unrecognized #{self.name} name #{name.inspect}'"
-    end
-
-    def [](name)
-      by_name(name)
     end
 
     def recognized?(name)
@@ -67,22 +55,26 @@ module EnumeratedType
     private
 
     def declare(name, options = {})
-      value = options.delete(:value)
-      value ||= (map(&:value).max || 0) + 1
-
       if map(&:name).include?(name)
         raise(ArgumentError, "duplicate name #{name.inspect}")
-      end
-
-      if map(&:value).include?(value)
-        raise(ArgumentError, "duplicate :value #{value.inspect}")
       end
 
       define_method(:"#{name}?") do
         self.name == name
       end
 
-      enumerated = new(name, value, options)
+      options.keys.each do |property|
+        unless instance_methods.include?(:"#{property}")
+          attr_reader(:"#{property}")
+        end
+
+        unless instance_methods.include?(:"#{property}=")
+          attr_writer(:"#{property}")
+          private(:"#{property}=")
+        end
+      end
+
+      enumerated = new(name, options)
 
       @all << enumerated
       const_set(name.to_s.upcase, enumerated)

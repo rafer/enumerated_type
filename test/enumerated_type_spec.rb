@@ -9,10 +9,8 @@ describe EnumeratedType do
   class Gender
     include EnumeratedType
 
-    attr_accessor :planet
-
-    declare(:male, :planet => "mars")
-    declare(:female, :planet => "venus")
+    declare :male, :planet => "mars"
+    declare :female, :planet => "venus"
   end
 
   it "privatizes the constructor" do
@@ -74,46 +72,23 @@ describe EnumeratedType do
       lambda { Gender.send(:declare, duplicate_name) }.must_raise(ArgumentError, /duplicate name/)
     end
 
-    it "allows you to specify :value" do
-      gender = Class.new do
-        include EnumeratedType
-        declare :male, :value => 100
-        declare :female, :value => 101
-      end
-
-      gender.map(&:value).must_equal [100, 101]
-    end
-
-    it "requires :value to be unique" do
-      duplicate_value = Gender.first.value
-
-      lambda { Gender.send(:declare, :neuter, :value => duplicate_value ) }.must_raise(ArgumentError, /duplicate :value/)
-    end
-
-    it "assigns extra attributes from .declare" do
+    it "assigns properties and makes them accessible" do
       Gender.map(&:planet).must_equal ["mars", "venus"]
+    end
+
+    it "does not expose public setters for properties" do
+      Gender::MALE.respond_to?(:planet=).must_equal false
     end
   end
 
-  describe ".by_name" do
+  describe ".[]" do
     it "returns the type with the given name" do
       gender = Gender.first
-      Gender.by_name(gender.name).must_equal gender
+      Gender[gender.name].must_equal gender
     end
 
     it "raises an error given an unrecognized name" do
-      lambda { Gender.by_name(:neuter) }.must_raise(ArgumentError)
-    end
-  end
-
-  describe ".by_value" do
-    it "returns the type with the given value" do
-      gender = Gender.first
-      Gender.by_value(gender.value).must_equal gender
-    end
-
-    it "raises an error given an unrecognized value" do
-      lambda { Gender.by_value((Gender.map(&:value).max) + 1) }.must_raise(ArgumentError)
+      lambda { Gender[:neuter] }.must_raise ArgumentError
     end
   end
 
