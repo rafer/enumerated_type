@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["rafer@ralua.com"]
   spec.description   = %q{Simple enumerated types}
   spec.summary       = %q{Simple enumerated types}
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/rafer/enumerated_type"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)

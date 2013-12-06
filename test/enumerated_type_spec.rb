@@ -72,8 +72,16 @@ describe EnumeratedType do
       lambda { Gender.send(:declare, duplicate_name) }.must_raise(ArgumentError, /duplicate name/)
     end
 
+    it "produces frozen instances" do
+      Gender.all?(&:frozen?).must_equal true
+    end
+
     it "assigns properties and makes them accessible" do
       Gender.map(&:planet).must_equal ["mars", "venus"]
+    end
+
+    it "freezes properties" do
+      lambda { Gender::MALE.planet.replace("pluto") }.must_raise(RuntimeError, /can't modify frozen/)
     end
 
     it "does not expose public setters for properties" do

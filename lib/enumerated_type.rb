@@ -26,7 +26,7 @@ module EnumeratedType
 
   def initialize(name, properties)
     @name = name
-    properties.each { |k, v| send(:"#{k}=", v) }
+    properties.each { |k, v| send(:"#{k}=", v.freeze) }
   end
 
   def self.new(*names)
@@ -74,7 +74,7 @@ module EnumeratedType
         end
       end
 
-      enumerated = new(name, options)
+      enumerated = new(name, options).freeze
 
       @all << enumerated
       const_set(name.to_s.upcase, enumerated)
