@@ -64,6 +64,10 @@ module EnumeratedType
       end
 
       options.keys.each do |property|
+        if property.to_s == "name"
+          raise ArgumentError, "Property name 'name' is not allowed (conflicts with default EnumeratedType#name)"
+        end
+
         unless instance_methods.include?(:"#{property}")
           attr_reader(:"#{property}")
         end

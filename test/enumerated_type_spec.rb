@@ -87,6 +87,17 @@ describe EnumeratedType do
     it "does not expose public setters for properties" do
       Gender::MALE.respond_to?(:planet=).must_equal false
     end
+
+    it "does not allow the property name 'name'" do
+      name_property_definition = lambda do
+        Class.new do
+          include EnumeratedType
+          declare :test, :name => "test"
+        end
+      end
+
+      name_property_definition.must_raise(ArgumentError, "Property name 'name' is not allowed")
+    end
   end
 
   describe ".[]" do
