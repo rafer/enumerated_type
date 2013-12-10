@@ -1,6 +1,6 @@
 require "bundler/setup"
 
-require "minitest"
+require "minitest/autorun"
 require "minitest/pride"
 
 require "enumerated_type"
