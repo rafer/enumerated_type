@@ -6,7 +6,7 @@ Dead simple enumerated types for Ruby.
 
 This gem implements the familiar notion of enumerated types in Ruby.
 
-"But this is Ruby," you say, "where we haven't any use for such things." Yep. In Ruby, you can get a long way without any formalized concept of enumerated types by just using regular, boring old symbols. Let's take the fairly typical example of a "status" field on the `Job` class:
+"But this is Ruby," you say, "where we haven't any use for such things." Yep. In Ruby, you can get a long way without any formalized concept of enumerated types by using symbols. Let's take the fairly typical example of a "status" field on the `Job` class:
 
 ```ruby
 class Job
@@ -27,7 +27,7 @@ class Job
 end
 ```
 
-At first pass this seems fine. Any code that needs to act based on a job's status has to have magic symbols (i.e. `job.status == :success`), but maybe that's ok for a little while. Later, though, we might want to add a little logic to the `Job`'s status, something like:
+At first pass this seems fine. Any code that needs to act based on a job's status has to have magic symbols (i.e. `job.status == :success`), but maybe that's ok for a little while. Later, though, we might want to add a little logic around the `Job`'s status, something like:
 
 ```ruby
 # In a job notifier class or something
