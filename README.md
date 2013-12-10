@@ -104,7 +104,7 @@ Get an instance of an enumerated type:
 
 # Or via symbol...
 @status = JobStatus[:pending]
-@status = JobStatus[:does_not_exist] #=> raises an ArgumentError
+@status = JobStatus[:wrong] #=> raises an ArgumentError
 ```
 
 All instances have predicate methods defined automatically:
@@ -166,4 +166,4 @@ JobStatus::SUCCESS.message # => "Your job has completed"
 
 To run the tests (assuming you have already run `gem install bundler`):
 
-    bundle install && rake test
+    bundle install && bundle exec rake
