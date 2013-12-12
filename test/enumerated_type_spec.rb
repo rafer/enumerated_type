@@ -132,4 +132,10 @@ describe EnumeratedType do
       Gender::MALE.to_s.must_equal "male"
     end
   end
+
+  describe "#to_json" do
+    it "is the name (as a string)" do
+      Gender::MALE.to_json.must_equal "male"
+    end
+  end
 end

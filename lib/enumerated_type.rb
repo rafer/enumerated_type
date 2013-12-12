@@ -22,6 +22,10 @@ module EnumeratedType
     name.to_s
   end
 
+  def to_json
+    name.to_s
+  end
+
   private
 
   def initialize(name, properties)
