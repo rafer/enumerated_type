@@ -27,10 +27,10 @@ class Job
 end
 ```
 
-At first pass this seems fine. Any code that needs to act based on a job's status has to have magic symbols (i.e. `job.status == :success`), but maybe that's ok for a little while. Later, though, we might want to add a little logic around the `Job`'s status, something like:
+At first pass this seems fine. Any code that needs to act based on a job's status has to have magic symbols (i.e. `job.status == :success`), but maybe that's OK for a little while. Later, though, we might want to add a little logic around the `Job`'s status, something like:
 
 ```ruby
-# In a job notifier class or something
+# In something like a JobNotifier class
 if job.status == :failure or job.status == :success
   # Email user to let them know about their job
 end
@@ -75,9 +75,9 @@ end
 
 There are some advantages to this approach:
 
-  1. The list of all the possible statuses lives in *only one place*. I think it's way easier to look at the `JobStatus` class and see what the possible statuses are than it is to hunt through the `Job` class Looking for symbols assigned to `@status`.
+  1. The list of all the possible statuses lives in *only one place*. I think it's way easier to look at the `JobStatus` class and see what the possible statuses are than it is to hunt through the `Job` class Looking for symbols assigned to `@status` (or, even worse, to look *outside* the `Job` class looking for assignments to Job#status).
   2. It's now possible to interact with the list of all legal statuses programmatically (perhaps in an admin console that has a drop down for of all statuses so that they may be manually updated).
-  3. We can separate behavior (methods) that apply to the enumerated types from the classes that include one of these types (`Job` in our example). Although the status handling code in our version of `Job` was fairly simple, it often becomes clear that handling the status of a job is a very separate concern from the actual processing of a `Job`, and this implementing both in a single class becomes an [SRP][http://en.wikipedia.org/wiki/Single_responsibility_principle] violation.
+  3. We can separate behavior (methods) that apply to the enumerated types from the classes that include one of these types (`Job` in our example). Although the status handling code in our version of `Job` was fairly simple, it often becomes clear that handling the status of a job is a very separate concern from the actual processing of a `Job`, and thus implementing both in a single class becomes a [Single Responsibility Principle](http://en.wikipedia.org/wiki/Single_responsibility_principle) violation.
   4. By separating the `JobStatus` behavior from the `Job`, we're able to more easily respond to change in requirements around the `JobStatus` in the future. Perhaps at some point we'll want to transform `JobStatus` into a state machine where only certain transitions are allowed, or include code that audits the change of state, etc.
 
 "But all did was explain enumerated types, the kind that are present all over the place in other languages." Yep. That is correct. The only downside of the approach shown is that you have to re-create very similar, one-off implementations of an enumerated type. The `EnumeratedType` gem is just a clean and simple Ruby implementation of a well known concept.
