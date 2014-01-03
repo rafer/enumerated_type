@@ -162,6 +162,19 @@ end
 JobStatus::SUCCESS.message # => "Your job has completed"
 ```
 
+Coerce from other types:
+
+```ruby
+JobStatus.coerce(:pending)           # => #<JobStatus:pending>
+JobStatus.coerce("pending")          # => #<JobStatus:pending>
+JobStatus.coerce(JobStatus::PENDING) # => #<JobStatus:pending>
+JobStatus.coerce(nil)                # => raises a TypeError
+JobStatus.coerce(1)                  # => raises a TypeError
+JobStatus.coerce(:wrong)             # => raises an ArgumentError
+```
+
+`.coerce` is particularly useful for scrubbing parameters, allowing you to succinctly assert that arguments are valid for your `EnumeratedType`, while also broadening the range of types that can be used as input. Using `.coerce` at the boundaries of your code allows clients the freedom to pass in full fledged `EnumeratedType` objects, symbols or even strings, and allows you to use the `.coerce`d input with confidence (i.e without any type or validity checking beyond the call to `.coerce`).
+
 ## Development
 
 To run the tests (assuming you have already run `gem install bundler`):

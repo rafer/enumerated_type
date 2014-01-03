@@ -56,6 +56,16 @@ module EnumeratedType
       map(&:name).include?(name)
     end
 
+    def coerce(coercable)
+      case
+      when coercable.class == self then coercable
+      when coercable.respond_to?(:to_sym) then self[coercable.to_sym]
+      when coercable.respond_to?(:to_str) then self[coercable.to_str.to_sym]
+      else
+        raise TypeError, "#{coercable.inspect} cannot be coerced into a #{self.name}"
+      end
+    end
+
     private
 
     def declare(name, options = {})

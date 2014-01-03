@@ -14,7 +14,7 @@ describe EnumeratedType do
   end
 
   it "privatizes the constructor" do
-    lambda { Gender.new }.must_raise(NoMethodError, /private method `new' called/)
+    lambda { Gender.new }.must_raise(NoMethodError)
   end
 
   it "is enumerable" do
@@ -64,12 +64,12 @@ describe EnumeratedType do
 
   describe ".declare" do
     it "is private" do
-      lambda { Gender.declare }.must_raise(NoMethodError, /private method `declare' called/)
+      lambda { Gender.declare }.must_raise(NoMethodError)
     end
 
     it "requires the name to be unique" do
       duplicate_name = Gender.first.name
-      lambda { Gender.send(:declare, duplicate_name) }.must_raise(ArgumentError, /duplicate name/)
+      lambda { Gender.send(:declare, duplicate_name) }.must_raise(ArgumentError)
     end
 
     it "produces frozen instances" do
@@ -81,7 +81,7 @@ describe EnumeratedType do
     end
 
     it "freezes properties" do
-      lambda { Gender::MALE.planet.replace("pluto") }.must_raise(RuntimeError, /can't modify frozen/)
+      lambda { Gender::MALE.planet.replace("pluto") }.must_raise(RuntimeError)
     end
 
     it "does not expose public setters for properties" do
@@ -96,7 +96,7 @@ describe EnumeratedType do
         end
       end
 
-      name_property_definition.must_raise(ArgumentError, "Property name 'name' is not allowed")
+      name_property_definition.must_raise(ArgumentError)
     end
   end
 
@@ -118,6 +118,37 @@ describe EnumeratedType do
 
     it "returns false if the name is has not been declared" do
       Gender.recognized?(:neuter).must_equal false
+    end
+  end
+
+  describe ".coerce" do
+    it "returns the correct type if given a recognized symbol" do
+      Gender.coerce(:female).must_equal Gender::FEMALE
+    end
+
+    it "returns the correct type if given a recognized string" do
+      Gender.coerce("female").must_equal Gender::FEMALE
+    end
+
+    it "returns the correct type if given something that responds to #to_str" do
+      stringlike = Object.new
+      def stringlike.to_str
+        "female"
+      end
+
+      Gender.coerce(stringlike).must_equal Gender::FEMALE
+    end
+
+    it "returns the object unmodified if given an instance of the enumerated type" do
+      Gender.coerce(Gender::FEMALE).must_equal Gender::FEMALE
+    end
+
+    it "raises a TypeError if given something that isn't coercable" do
+      lambda { Gender.coerce(Object.new) }.must_raise(TypeError)
+    end
+
+    it "raises a ArgumentError if given something coercable but not recognized" do
+      lambda { Gender.coerce(:neuter) }.must_raise(ArgumentError)
     end
   end
 
