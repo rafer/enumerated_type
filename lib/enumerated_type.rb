@@ -22,7 +22,11 @@ module EnumeratedType
     name.to_s
   end
 
-  def to_json
+  def to_json(*)
+    name.to_s
+  end
+
+  def as_json(*)
     name.to_s
   end
 

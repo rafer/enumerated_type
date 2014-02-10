@@ -168,5 +168,19 @@ describe EnumeratedType do
     it "is the name (as a string)" do
       Gender::MALE.to_json.must_equal "male"
     end
+    
+    it "doesn't raise an exception when given options" do
+      Gender::MALE.to_json(:stuff => "here")
+    end
+  end
+  
+  describe "#as_json" do
+    it "is the name (as a string)" do
+      Gender::MALE.as_json.must_equal "male"
+    end
+    
+    it "doesn't raise an exception when given options" do
+      Gender::MALE.as_json(:stuff => "here")
+    end
   end
 end
