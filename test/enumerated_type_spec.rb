@@ -80,8 +80,29 @@ describe EnumeratedType do
       Gender.map(&:planet).must_equal ["mars", "venus"]
     end
 
-    it "freezes properties" do
-      lambda { Gender::MALE.planet.replace("pluto") }.must_raise(RuntimeError)
+    it "freezes String properties" do
+      Gender::MALE.planet.frozen?.must_equal true
+    end
+    
+    it "does not freeze other properties" do
+      NonString = Class.new do
+        def frozen?
+          !!@frozen
+        end
+        
+        def freeze
+          @frozen = true
+        end
+      end
+      
+      non_string = NonString.new
+      
+      Class.new do
+        include EnumeratedType
+        declare :test, :other => non_string
+      end
+      
+      non_string.frozen?.must_equal false
     end
 
     it "does not expose public setters for properties" do

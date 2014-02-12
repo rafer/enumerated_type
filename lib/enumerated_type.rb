@@ -34,7 +34,8 @@ module EnumeratedType
 
   def initialize(name, properties)
     @name = name
-    properties.each { |k, v| send(:"#{k}=", v.freeze) }
+    properties.each { |k, v| send(:"#{k}=", v) }
+    properties.values.each { |v| v.freeze if v.is_a?(String) }
   end
 
   def self.new(*names)
