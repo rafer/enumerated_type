@@ -53,8 +53,8 @@ module EnumeratedType
     end
 
     def [](name)
-      each { |e| return e if e.name == name }
-      raise ArgumentError, "Unrecognized #{self.name} name #{name.inspect}'"
+      found = find { |e| e.name == name }
+      found || raise(ArgumentError, "Unrecognized #{self.name} name #{name.inspect}'")
     end
 
     def recognized?(name)
