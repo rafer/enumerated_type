@@ -23,7 +23,7 @@ module EnumeratedType
   end
 
   def to_json(*)
-    name.to_s
+    '"' + as_json + '"'
   end
 
   def as_json(*)

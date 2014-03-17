@@ -187,7 +187,7 @@ describe EnumeratedType do
 
   describe "#to_json" do
     it "is the name (as a string)" do
-      Gender::MALE.to_json.must_equal "male"
+      Gender::MALE.to_json.must_equal '"male"'
     end
     
     it "doesn't raise an exception when given options" do
