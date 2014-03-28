@@ -154,9 +154,9 @@ Add arbitrary attributes:
 class JobStatus
   include EnumeratedType
 
-  declare :pending, :message => "Your Job is waiting to be processed"
-  declare :success, :message => "Your Job has completed"
-  declare :failure, :message => "Oops, it looks like there was a problem"
+  declare :pending, :code => 1, :message => "Your Job is waiting to be processed"
+  declare :success, :code => 2, :message => "Your Job has completed"
+  declare :failure, :code => 3, :message => "Oops, it looks like there was a problem"
 end
 
 JobStatus::SUCCESS.message # => "Your job has completed"
@@ -174,6 +174,26 @@ JobStatus.coerce(:wrong)             # => raises an ArgumentError
 ```
 
 `.coerce` is particularly useful for scrubbing parameters, allowing you to succinctly assert that arguments are valid for your `EnumeratedType`, while also broadening the range of types that can be used as input. Using `.coerce` at the boundaries of your code allows clients the freedom to pass in full fledged `EnumeratedType` objects, symbols or even strings, and allows you to use the `.coerce`d input with confidence (i.e without any type or validity checking beyond the call to `.coerce`).
+
+Look up an enum by a property:
+
+```ruby
+JobStatus.by(:code, 2) # => #<JobStatus:success>
+JobStatus.by(:code, 4) # => raises a TypeError
+```
+
+The first parameter specifies the method that will be called on instances of your `EnumeratedType` during lookup. This works for attributes specified with `declare` (such as `:code` above) but also for .
+
+```ruby
+class JobStatus
+  def display
+    "#{name}-#{code}"
+  end
+end
+
+JobStatus.by(:display, "pending-1") # => #<JobStatus:pending>
+```
+If more than one instance of your `EnumeratedType` matches, the first match will be returned in the order the types were `declared`.
 
 ## Development
 

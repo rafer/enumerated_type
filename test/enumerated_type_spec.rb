@@ -83,25 +83,25 @@ describe EnumeratedType do
     it "freezes String properties" do
       Gender::MALE.planet.frozen?.must_equal true
     end
-    
+
     it "does not freeze other properties" do
       NonString = Class.new do
         def frozen?
           !!@frozen
         end
-        
+
         def freeze
           @frozen = true
         end
       end
-      
+
       non_string = NonString.new
-      
+
       Class.new do
         include EnumeratedType
         declare :test, :other => non_string
       end
-      
+
       non_string.frozen?.must_equal false
     end
 
@@ -173,6 +173,36 @@ describe EnumeratedType do
     end
   end
 
+  describe ".by" do
+    class Shapes
+      include EnumeratedType
+
+      declare :triangle, :sides => 3, :pretty_hip => "YEAH"
+      declare :rectangle, :sides => 4, :pretty_hip => "NAH"
+      declare :pentagon, :sides => 5, :pretty_hip => "YEAH"
+
+      def sides_squared
+        sides * sides
+      end
+    end
+
+    it "looks the value up by the specified attribute" do
+      Shapes.by(:sides, 4).must_equal(Shapes::RECTANGLE)
+    end
+
+    it "raises an argumetn if there is no match" do
+      lambda { Shapes.by(:sides, 6) }.must_raise(ArgumentError)
+    end
+
+    it "returns the first declared value if there is more than one match" do
+      Shapes.by(:pretty_hip, "YEAH").must_equal(Shapes::TRIANGLE)
+    end
+
+    it "works with arbitrary methods" do
+      Shapes.by(:sides_squared, 16).must_equal(Shapes::RECTANGLE)
+    end
+  end
+
   describe "#inspect" do
     it "looks reasonable" do
       Gender::FEMALE.inspect.must_equal "#<Gender:female>"
@@ -189,17 +219,17 @@ describe EnumeratedType do
     it "is the name (as a string)" do
       Gender::MALE.to_json.must_equal '"male"'
     end
-    
+
     it "doesn't raise an exception when given options" do
       Gender::MALE.to_json(:stuff => "here")
     end
   end
-  
+
   describe "#as_json" do
     it "is the name (as a string)" do
       Gender::MALE.as_json.must_equal "male"
     end
-    
+
     it "doesn't raise an exception when given options" do
       Gender::MALE.as_json(:stuff => "here")
     end

@@ -52,9 +52,13 @@ module EnumeratedType
       @all.each(&block)
     end
 
+    def by(name, value)
+      found = find { |e| e.send(name) == value }
+      found || raise(ArgumentError, "Could not find #{self.name} with ##{name} == #{value.inspect}'")
+    end
+
     def [](name)
-      found = find { |e| e.name == name }
-      found || raise(ArgumentError, "Unrecognized #{self.name} name #{name.inspect}'")
+      by(:name, name)
     end
 
     def recognized?(name)
