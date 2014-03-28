@@ -182,7 +182,7 @@ JobStatus.by(:code, 2) # => #<JobStatus:success>
 JobStatus.by(:code, 4) # => raises a TypeError
 ```
 
-The first parameter specifies the method that will be called on instances of your `EnumeratedType` during lookup. This works for attributes specified with `declare` (such as `:code` above) but also for .
+The first parameter specifies the method that will be called on instances of your `EnumeratedType` during lookup. This works for attributes specified with `declare` (such as `:code` above) but also for any instance method on your `EnumeratedType`.
 
 ```ruby
 class JobStatus
@@ -193,7 +193,7 @@ end
 
 JobStatus.by(:display, "pending-1") # => #<JobStatus:pending>
 ```
-If more than one instance of your `EnumeratedType` matches, the first match will be returned in the order the types were `declared`.
+If more than one instance of your `EnumeratedType` matches, the first match will be returned, in the order the types were `declared`.
 
 ## Development
 
