@@ -36,7 +36,7 @@ if job.status == :failure or job.status == :success
 end
 ```
 
-At this point, it's starting to feel like a little bit too much knowledge about the `Job` has slipped into other classes; any changes to the in the way status is handled in `Job` will require change in other classes because they've been exposed to the details of it's implementation. What, for example, if we want to add another "finished" state that a user should be notified of (say, `:partial_success`)? To deal with this we might create a predicate method that lets you interrogate a `Job` more abstractly about it's status:
+At this point, its starting to feel like a little bit too much knowledge about the `Job` has slipped into other classes; any changes to the in the way status is handled in `Job` will require change in other classes because they've been exposed to the details of its implementation. What, for example, if we want to add another "finished" state that a user should be notified of (say, `:partial_success`)? To deal with this we might create a predicate method that lets you interrogate a `Job` more abstractly about it's status:
 
 ```ruby
 class Job
@@ -47,7 +47,7 @@ class Job
 end
 ```
 
-Now, say we need another kind of job: the `AdminJob`. It needs to have the same set of statuses (with the same behavior as `Job`'s status). We could certainly move the status related code into a `StatusHaving` module and mix it in to both `Job` and `AdminJob`, but there are some drawbacks here, chief among them that we'd have to add a good bit of coupling between the `Job`, `AdminJob` and the `StatusHaving` mix-in module. For example both classes and the mix-in would need to agree on the `@status` instance variable. I would argue at this point the idea of a `JobStatus` should be promoted to it's own class, maybe with a little bit of error checking:
+Now, say we need another kind of job: the `AdminJob`. It needs to have the same set of statuses (with the same behavior as `Job`'s status). We could certainly move the status related code into a `StatusHaving` module and mix it in to both `Job` and `AdminJob`, but there are some drawbacks here, chief among them that we'd have to add a good bit of coupling between the `Job`, `AdminJob` and the `StatusHaving` mix-in module. For example both classes and the mix-in would need to agree on the `@status` instance variable. I would argue at this point the idea of a `JobStatus` should be promoted to its own class, maybe with a little bit of error checking:
 
 ```ruby
 class JobStatus
