@@ -190,8 +190,12 @@ describe EnumeratedType do
       Shapes.by(:sides, 4).must_equal(Shapes::RECTANGLE)
     end
 
-    it "raises an argumetn if there is no match" do
+    it "raises an argument if there is no match" do
       lambda { Shapes.by(:sides, 6) }.must_raise(ArgumentError)
+    end
+
+    it "executes (and returns) the block if there is no match" do
+      (Shapes.by(:sides, 6) { "UnknownShape"}).must_equal("UnknownShape")
     end
 
     it "returns the first declared value if there is more than one match" do
