@@ -120,14 +120,8 @@ module EnumeratedType
           raise ArgumentError, "Property name 'name' is not allowed (conflicts with default EnumeratedType#name)"
         end
 
-        unless method_defined?(:"#{property}")
-          attr_reader(:"#{property}")
-        end
-
-        unless method_defined?(:"#{property}=")
-          attr_writer(:"#{property}")
-          private(:"#{property}=")
-        end
+        attr_accessor(:"#{property}")
+        private(:"#{property}=")
       end
 
       enumerated = new(name, options).freeze
