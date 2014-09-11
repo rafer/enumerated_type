@@ -1,9 +1,33 @@
 require "enumerated_type/version"
 
 module EnumeratedType
+  class ByCache
+    def initialize
+      self.by_property = { }
+    end
+
+    def set(property, value, enumerated)
+      by_value = (by_property[property.to_sym] ||= { })
+      by_value[value] ||= enumerated
+    end
+
+    def get(property, value, miss)
+      by_property.fetch(property.to_sym).fetch(value, &miss)
+    end
+
+    def has_property?(property)
+      by_property.has_key?(property.to_sym)
+    end
+
+    private
+
+    attr_accessor :by_property
+  end
+
   def self.included(base)
     base.instance_eval do
       @all = []
+      @by_cache = ByCache.new
 
       attr_reader :name, :value
 
@@ -54,7 +78,12 @@ module EnumeratedType
 
     def by(property, value, &miss)
       miss ||= lambda { raise(ArgumentError, "Could not find #{self.name} with ##{property} == #{value.inspect}'") }
-      find { |e| e.send(property) == value } || miss.call
+
+      if @by_cache.has_property?(property)
+        @by_cache.get(property, value, miss)
+      else
+        find { |e| e.send(property) == value } || miss.call
+      end
     end
 
     def [](name)
@@ -78,7 +107,7 @@ module EnumeratedType
     private
 
     def declare(name, options = {})
-      if map(&:name).include?(name)
+      unless by(:name, name) { :not_found } == :not_found
         raise(ArgumentError, "duplicate name #{name.inspect}")
       end
 
@@ -102,6 +131,10 @@ module EnumeratedType
       end
 
       enumerated = new(name, options).freeze
+
+      (options.keys + [:name]).each do |property|
+        @by_cache.set(property, enumerated.send(property), enumerated)
+      end
 
       @all << enumerated
       const_set(name.to_s.upcase, enumerated)
