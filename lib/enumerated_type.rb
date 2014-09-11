@@ -91,11 +91,11 @@ module EnumeratedType
           raise ArgumentError, "Property name 'name' is not allowed (conflicts with default EnumeratedType#name)"
         end
 
-        unless instance_methods.include?(:"#{property}")
+        unless method_defined?(:"#{property}")
           attr_reader(:"#{property}")
         end
 
-        unless instance_methods.include?(:"#{property}=")
+        unless method_defined?(:"#{property}=")
           attr_writer(:"#{property}")
           private(:"#{property}=")
         end
