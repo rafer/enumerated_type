@@ -77,7 +77,7 @@ module EnumeratedType
     end
 
     def by(property, value, &miss)
-      miss ||= lambda { raise(ArgumentError, "Could not find #{self.name} with ##{property} == #{value.inspect}'") }
+      miss ||= Proc.new { raise(ArgumentError, "Could not find #{self.name} with ##{property} == #{value.inspect}'") }
 
       if @by_cache.has_property?(property)
         @by_cache.get(property, value, miss)
