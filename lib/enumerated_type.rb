@@ -52,9 +52,9 @@ module EnumeratedType
       @all.each(&block)
     end
 
-    def by(name, value, &miss)
-      miss ||= lambda { raise(ArgumentError, "Could not find #{self.name} with ##{name} == #{value.inspect}'") }
-      find { |e| e.send(name) == value } || miss.call
+    def by(property, value, &miss)
+      miss ||= lambda { raise(ArgumentError, "Could not find #{self.name} with ##{property} == #{value.inspect}'") }
+      find { |e| e.send(property) == value } || miss.call
     end
 
     def [](name)
