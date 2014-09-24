@@ -1,7 +1,29 @@
 require "enumerated_type/version"
 
 module EnumeratedType
-  class ByCache
+  # In the unfortunate case where there are thousands of elements in an
+  # enumerated type, an iteration based strategy for EnumeratedType.by is slow.
+  # Particularly, since declare does .by(:name, name) to detect name
+  # collisions, EnumeratedType.declare is O(n^2) where n is the
+  # EnumeratedType.count, which can take seconds when the enunm is loaded,
+  # which is, like, a total bummer.  This class indexes enums by property and
+  # value so lookups are constant time. The backing hash would look like this
+  # for the Shape enum.
+  #
+  # {
+  #   :sides => {
+  #     4 => Shape::Square
+  #   },
+  #   :name => {
+  #     :square => Shape::Square
+  #   }
+  # }
+  #
+  # Note that there is only a single value for each property/value combination.
+  # #set will respect the first instance of a property/value combination (i.e
+  # subsequent duplicate #sets will not override the first value). This matches
+  # the definition of EnumeratedType.by.
+  class PropertyIndex
     def initialize
       self.by_property = { }
     end
@@ -27,7 +49,7 @@ module EnumeratedType
   def self.included(base)
     base.instance_eval do
       @all = []
-      @by_cache = ByCache.new
+      @by_cache = PropertyIndex.new
 
       attr_reader :name, :value
 
