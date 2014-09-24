@@ -195,6 +195,13 @@ JobStatus.by(:display, "pending-1") # => #<JobStatus:pending>
 ```
 If more than one instance of your `EnumeratedType` matches, the first match will be returned, in the order the types were `declared`.
 
+If you pass a bock to .by, it will be executed and its value returned (just like Hash#fetch). This is useful for defining a default value or a custom error message.
+
+```ruby
+JobStatus.by(:display, "does-not-exist") { JobStatus::FAILURE }  # => #<JobStatus:failure>
+JobStatus.by(:display, "does-not-exist") { |v| raise("I have no idea what to do with #{v.inspect}") } # => raises an exception
+```
+
 ## Development
 
 To run the tests (assuming you have already run `gem install bundler`):

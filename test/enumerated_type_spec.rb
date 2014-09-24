@@ -190,12 +190,16 @@ describe EnumeratedType do
       Shapes.by(:sides, 4).must_equal(Shapes::RECTANGLE)
     end
 
-    it "raises an argument if there is no match" do
+    it "raises an argument if there is no match and no block given" do
       lambda { Shapes.by(:sides, 6) }.must_raise(ArgumentError)
     end
 
     it "executes (and returns) the block if there is no match" do
       (Shapes.by(:sides, 6) { "UnknownShape"}).must_equal("UnknownShape")
+    end
+
+    it "passes the value to the block" do
+      (Shapes.by(:sides, 6) { |sides| "No shape with #{sides} sides" }).must_equal("No shape with 6 sides")
     end
 
     it "returns the first declared value if there is more than one match" do
@@ -205,6 +209,12 @@ describe EnumeratedType do
     it "works with arbitrary methods" do
       Shapes.by(:sides_squared, 16).must_equal(Shapes::RECTANGLE)
     end
+
+    it "passes the value to the block for arbitrary methods" do
+      (Shapes.by(:sides_squared, 3) { |sides| "No shape with #{sides} sides squared" }).must_equal("No shape with 3 sides squared")
+    end
+
+
   end
 
   describe "#inspect" do

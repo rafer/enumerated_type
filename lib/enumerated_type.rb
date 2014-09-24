@@ -77,12 +77,12 @@ module EnumeratedType
     end
 
     def by(property, value, &miss)
-      miss ||= Proc.new { raise(ArgumentError, "Could not find #{self.name} with ##{property} == #{value.inspect}'") }
+      miss ||= Proc.new { |v| raise(ArgumentError, "Could not find #{self.name} with ##{property} == #{v.inspect}'") }
 
       if @by_cache.has_property?(property)
         @by_cache.get(property, value, miss)
       else
-        find { |e| e.send(property) == value } || miss.call
+        find { |e| e.send(property) == value } || miss.call(value)
       end
     end
 
