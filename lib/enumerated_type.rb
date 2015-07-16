@@ -143,6 +143,7 @@ module EnumeratedType
         end
 
         attr_accessor(:"#{property}")
+        public(:"#{property}")
         private(:"#{property}=")
       end
 
