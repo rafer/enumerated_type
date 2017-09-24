@@ -229,6 +229,12 @@ describe EnumeratedType do
     end
   end
 
+  describe "#to_sym" do
+    it "is the name (as a symbol)" do
+      Gender::MALE.to_sym.must_equal :male
+    end
+  end
+
   describe "#to_json" do
     it "is the name (as a string)" do
       Gender::MALE.to_json.must_equal '"male"'

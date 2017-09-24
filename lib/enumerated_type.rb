@@ -68,6 +68,10 @@ module EnumeratedType
     name.to_s
   end
 
+  def to_sym
+    name.to_sym
+  end
+
   def to_json(*)
     '"' + as_json + '"'
   end
